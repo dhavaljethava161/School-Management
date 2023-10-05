@@ -1,7 +1,7 @@
 import User from "./user";
 import Fees from "./fees";
 
-export const model = {
+export const models = {
   User,
   Fees,
 };

@@ -17,4 +17,4 @@ const feesSchema = mongoose.Schema({
   description: String,
 });
 
-export default mongoose.model("Fees", feesSchema);
+export default mongoose.models("Fees", feesSchema);

@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
-import { model } from "../models";
+import { models } from "../models";
 
 export const create = (req, res) => {
-  model.User.create(req?.body)
+  models.User.create(req?.body)
     .then((resData) => {
       res.send({ status: 200, result: resData });
     })
@@ -13,7 +13,7 @@ export const create = (req, res) => {
 
 export const signin = async (req, res) => {
   let email = req?.body?.email;
-  await model.User.findOne({ email })
+  await models.User.findOne({ email })
     .then((resData) => {
       let token = jwt.sign(
         { email: resData.email, userType: resData.userType },
@@ -30,7 +30,7 @@ export const update = async (req, res) => {
   try {
     // const { id, userType } = req?.loginUser;
     const { id } = req?.params;
-    const newData = await model.User.findByIdAndUpdate(
+    const newData = await models.User.findByIdAndUpdate(
       { _id: id, userType: req?.body?.userType },
       req?.body,
       { new: true }
@@ -43,7 +43,7 @@ export const update = async (req, res) => {
 
 export const getByUserType = async (req, res) => {
   try {
-    const data = await model.User.find(
+    const data = await models.User.find(
       { userType: req.body.userType },
       { name: 1, email: 1, userType: 1 }
     );
@@ -55,7 +55,7 @@ export const getByUserType = async (req, res) => {
 
 export const getFees = async (req, res) => {
   try {
-    const data = await model.User.find(
+    const data = await models.User.find(
       { userType: "student", totalPaidFees: { $gt: 0 } },
       { totalPaidFees: 1, name: 1 }
     );
@@ -67,7 +67,7 @@ export const getFees = async (req, res) => {
 
 export const getSalary = async (req, res) => {
   try {
-    const data = await model.User.find(
+    const data = await models.User.find(
       { userType: "teacher", salary: { $gt: 0 } },
       { salary: 1, name: 1 }
     );

@@ -1,4 +1,4 @@
-import { model } from "../models";
+import { models } from "../models";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
@@ -11,10 +11,10 @@ export const create = async (req, res) => {
       });
     } else {
       const { email, userType } = req?.body;
-      const matchUser = await model.User.findOne({ email, userType });
+      const matchUser = await models.User.findOne({ email, userType });
       if (matchUser) res.send("teacher already exists");
       else {
-        const resData = await model.User.create(req?.body);
+        const resData = await models.User.create(req?.body);
         res.send({ status: 200, result: resData });
       }
     }
@@ -26,7 +26,7 @@ export const create = async (req, res) => {
 export const signin = async (req, res) => {
   const { email, password } = req?.body;
   try {
-    const user = await model.User.findOne({ email });
+    const user = await models.User.findOne({ email });
     if (!user) res.send("user not found");
     else {
       const matchPass = bcrypt.compare(password, user?.password);
@@ -50,7 +50,7 @@ export const update = async (req, res) => {
   try {
     if (newUserType === "principle") res.send("invalid userType");
     else {
-      const data = await model.User.findOneAndUpdate({ email, userType });
+      const data = await models.User.findOneAndUpdate({ email, userType });
       res.send({ status: 200, result: data });
     }
   } catch (err) {

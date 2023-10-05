@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { model } from "../models";
+import { models } from "../models";
 
 export const studentAuth = async (req, res, next) => {
   try {
@@ -7,7 +7,7 @@ export const studentAuth = async (req, res, next) => {
 
     const data = jwt.verify(token, process.env.AUTH_KEY);
 
-    const userData = await model.User.findOne({
+    const userData = await models.User.findOne({
       email: data.email,
       userType: data.userType,
     });
@@ -27,7 +27,7 @@ export const teacherAuth = async (req, res, next) => {
   const data = jwt.verify(token, process.env.AUTH_KEY);
   if (!data) res.send("Please signIn first");
 
-  const userData = await model.User.findOne({
+  const userData = await models.User.findOne({
     email: data.email,
     userType: data.userType,
   });
@@ -44,7 +44,7 @@ export const principleAuth = async (req, res, next) => {
     const data = jwt.verify(token, process.env.AUTH_KEY);
     if (!data) res.send("Please signIn first");
 
-    const userData = await model.User.findOne({ email: data.email });
+    const userData = await models.User.findOne({ email: data.email });
     req.loginUser = userData;
     console.log("=>>>>>");
     if (userData.userType !== "principle") res.send("You are'nt principle");

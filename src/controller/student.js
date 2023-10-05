@@ -1,4 +1,4 @@
-import { model } from "../models";
+import { models } from "../models";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -10,11 +10,11 @@ export const create = async (req, res) => {
       res.send("you are'nt authorised to create principle");
     else {
       const { email, userType } = req?.body;
-      const matchUser = await model.User.findOne({ email, userType });
+      const matchUser = await models.User.findOne({ email, userType });
       if (matchUser)
         res.send({ status: 400, message: "student is already exists" });
       else {
-        const studentCreate = await model.User.create(req?.body);
+        const studentCreate = await models.User.create(req?.body);
         res.send({ status: 200, result: studentCreate });
       }
     }
@@ -25,7 +25,7 @@ export const create = async (req, res) => {
 
 export const signin = async (req, res) => {
   const { email, password } = req?.body;
-  const matchUser = await model.User.findOne({ email });
+  const matchUser = await models.User.findOne({ email });
 
   if (!matchUser) res.send({ status: 400, message: "user not found" });
   else {
@@ -51,7 +51,7 @@ export const update = async (req, res) => {
     if (newUserType === "teacher") res.send("userType is invalid");
     else if (newUserType === "principle") res.send("userType is invalid");
     else {
-      const resData = await model.User.findOneAndUpdate(
+      const resData = await models.User.findOneAndUpdate(
         { email, userType },
         req?.body,
         { new: true }
@@ -65,7 +65,7 @@ export const update = async (req, res) => {
 
 export const Delete = async (req, res) => {
   const { email } = req?.body; // TODO have to use delete by id not email and aslo implement authentcate of teacher
-  await model.User.findOneAndRemove(email)
+  await models.User.findOneAndRemove(email)
     .then((resData) => {
       res.send({ status: 200, message: "student has been removed" });
     })
@@ -79,11 +79,11 @@ export const createFeesRecord = async (req, res) => {
   try {
     const { studentId, installmentAmount, description } = req?.body;
 
-    const student = await model.User.findById(studentId);
+    const student = await models.User.findById(studentId);
 
     student.totalPaidFees += installmentAmount;
 
-    const fee = new model.Fees({
+    const fee = new models.Fees({
       student: studentId,
       amount: student.totalPaidFees,
       paymentDate: new Date(),
