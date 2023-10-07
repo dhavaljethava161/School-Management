@@ -1,4 +1,5 @@
 import { models } from "../models";
+import { config } from "../config";
 
 export async function admin() {
   try {
@@ -7,9 +8,9 @@ export async function admin() {
     });
     if (!findPrinciple) {
       models.User.create({
-        email: process.env.PRINCIPLE_MAIL,
-        password: process.env.PRINCIPLE_PASS,
-        number: process.env.PRINCIPLE_NUM,
+        email: config.admin_cred.PRINCIPLE_MAIL,
+        password: config.admin_cred.PRINCIPLE_PASS,
+        number: config.admin_cred.PRINCIPLE_NUM,
         userType: "principle",
       });
       console.log("Principle created...!");

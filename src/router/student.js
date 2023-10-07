@@ -1,18 +1,8 @@
 import express from "express";
-import {
-  Delete,
-  create,
-  createFeesRecord,
-  signin,
-  update,
-} from "../controller/student";
+import { Delete, createFeesRecord, update } from "../controller/student";
 import { studentAuth } from "../authentication/auth";
 
 const studentRouter = express.Router();
-
-studentRouter.post("/create", create); // create student
-
-studentRouter.get("/signin", signin);
 
 studentRouter.get("/createfees", studentAuth, createFeesRecord); // update totalPaidFees
 

@@ -8,6 +8,7 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const userSchema = mongoose.Schema(
   {
+    userId: { type: ObjectId, ref: "User" },
     name: String,
     email: { type: String, validate: [emailValid, "email is not valid "] },
     password: { type: String, validate: [passValid, "password is not valid"] },
@@ -37,6 +38,7 @@ const userSchema = mongoose.Schema(
       type: Number,
       default: 0,
     },
+    verified: { type: Boolean },
   },
   { timestamps: true }
 );
@@ -47,4 +49,4 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-export default mongoose.models("User", userSchema);
+export default mongoose.model("User", userSchema);

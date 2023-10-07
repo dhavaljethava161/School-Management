@@ -20,7 +20,7 @@ export const studentAuth = async (req, res, next) => {
     res.send({ status: 400, error: error.message });
   }
 };
-
+//TODO make common auth for principle and teacher for get fees
 export const teacherAuth = async (req, res, next) => {
   const token = req?.headers?.authorization?.split(" ")?.[1];
 
@@ -46,9 +46,23 @@ export const principleAuth = async (req, res, next) => {
 
     const userData = await models.User.findOne({ email: data.email });
     req.loginUser = userData;
-    console.log("=>>>>>");
     if (userData.userType !== "principle") res.send("You are'nt principle");
     else next();
+  } catch (error) {
+    res.send({ status: 400, error: error.message });
+  }
+};
+
+export const checkAuth = async (req, res, next) => {
+  try {
+    const token = req.headers.authorization.split(" ")[1];
+
+    const data = jwt.verify(token, process.env.AUTH_KEY);
+    if (!data) res.send("Please signIn first");
+
+    const userData = await models.User.findOne({ email: data.email });
+    req.loginUser = userData;
+    next();
   } catch (error) {
     res.send({ status: 400, error: error.message });
   }

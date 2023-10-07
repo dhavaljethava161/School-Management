@@ -1,30 +1,4 @@
-import jwt from "jsonwebtoken";
 import { models } from "../models";
-
-export const create = (req, res) => {
-  models.User.create(req?.body)
-    .then((resData) => {
-      res.send({ status: 200, result: resData });
-    })
-    .catch((err) => {
-      res.send({ status: 400, err: err.message });
-    });
-};
-
-export const signin = async (req, res) => {
-  let email = req?.body?.email;
-  await models.User.findOne({ email })
-    .then((resData) => {
-      let token = jwt.sign(
-        { email: resData.email, userType: resData.userType },
-        process.env.AUTH_KEY
-      );
-      res.send({ status: 200, result: resData, token });
-    })
-    .catch((err) => {
-      res.send({ status: 400, err: err.message });
-    });
-};
 
 export const update = async (req, res) => {
   try {
@@ -44,9 +18,11 @@ export const update = async (req, res) => {
 export const getByUserType = async (req, res) => {
   try {
     const data = await models.User.find(
-      { userType: req.body.userType },
+      { userType: req.body.userType, verified: true },
       { name: 1, email: 1, userType: 1 }
     );
+    console.log("data===>", data);
+
     res.send({ status: 200, result: data });
   } catch (err) {
     res.send({ status: 400, err: err.message });
@@ -72,6 +48,31 @@ export const getSalary = async (req, res) => {
       { salary: 1, name: 1 }
     );
     res.send({ status: 200, result: data });
+  } catch (err) {
+    res.send({ status: 400, err: err.message });
+  }
+};
+
+export const paySalary = async (req, res) => {
+  try {
+    const { paid, email } = req?.body;
+    const user = await models.User.findOne({ email });
+    user.salary += paid;
+    user.save();
+    res.send({
+      status: 200,
+      message: `salary has been paid ${user.salary}`,
+    });
+  } catch (err) {}
+};
+
+export const verified = async (req, res) => {
+  try {
+    const { email, verified } = req?.body;
+    const user = await models.User.findOne({ email });
+    user.verified = verified;
+
+    res.send({ status: 200, result: user });
   } catch (err) {
     res.send({ status: 400, err: err.message });
   }

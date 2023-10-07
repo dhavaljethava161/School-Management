@@ -1,48 +1,4 @@
 import { models } from "../models";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
-
-export const create = async (req, res) => {
-  try {
-    if (req?.body?.userType === "principle") {
-      res.send({
-        status: 400,
-        message: "You are'nt authorised to make principle",
-      });
-    } else {
-      const { email, userType } = req?.body;
-      const matchUser = await models.User.findOne({ email, userType });
-      if (matchUser) res.send("teacher already exists");
-      else {
-        const resData = await models.User.create(req?.body);
-        res.send({ status: 200, result: resData });
-      }
-    }
-  } catch (error) {
-    res.send({ status: 400, err: err.message });
-  }
-};
-
-export const signin = async (req, res) => {
-  const { email, password } = req?.body;
-  try {
-    const user = await models.User.findOne({ email });
-    if (!user) res.send("user not found");
-    else {
-      const matchPass = bcrypt.compare(password, user?.password);
-      if (!matchPass) res.send("password does'nt matched");
-      else {
-        const token = jwt.sign(
-          { email: user.email, userType: user.userType },
-          process.env.AUTH_KEY
-        );
-        res.send({ status: 200, result: { user, token } });
-      }
-    }
-  } catch (err) {
-    res.send({ status: 400, err: err.message });
-  }
-};
 
 export const update = async (req, res) => {
   const { userType, email } = req?.loginUser;
@@ -55,5 +11,18 @@ export const update = async (req, res) => {
     }
   } catch (err) {
     res.send({ status: 400, error: error.message });
+  }
+};
+
+export const verified = async (req, res) => {
+  try {
+    const { email, verified } = req?.body;
+    const user = await models.User.findOne({ email });
+    if (verified === "teacher") req.send("Invalid user");
+
+    user.verified = verified;
+    res.send({ status: 200, result: user });
+  } catch (err) {
+    res.send({ status: 400, err: err.message });
   }
 };

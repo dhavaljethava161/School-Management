@@ -14,7 +14,7 @@ const feesSchema = mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
-  description: String,
+  description: { type: String, required: true },
 });
 
-export default mongoose.models("Fees", feesSchema);
+export default mongoose.model("Fees", feesSchema);
