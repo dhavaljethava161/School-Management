@@ -7,7 +7,7 @@ import {
   verified,
   paySalary,
 } from "../controller/principle";
-import { principleAuth, teacherAuth } from "../authentication/auth";
+import { checkAuth } from "../authentication/auth";
 
 const principleRouter = express.Router();
 
@@ -15,11 +15,11 @@ const principleRouter = express.Router();
 
 // what if student count is too much high so that's why we have made api for teacher also so from teachers can verify students only
 
-principleRouter.put("/verified", verified);
-principleRouter.put("/update/:id", principleAuth, update); // principle can any users's data by their userId
-principleRouter.get("/getfees", principleAuth, teacherAuth, getFees); // principle can see which student have paid their fees
+principleRouter.put("/verified", checkAuth, verified);
+principleRouter.put("/update/:id", checkAuth, update); // principle can any users's data by their userId
+principleRouter.get("/getfees", checkAuth, getFees); // principle can see which student have paid their fees
 principleRouter.get("/getsalary", getSalary);
-principleRouter.get("/user", principleAuth, getByUserType);
+principleRouter.get("/user", checkAuth, getByUserType);
 principleRouter.put("/paysalary", paySalary);
 
 export default principleRouter;

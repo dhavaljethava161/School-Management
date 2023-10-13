@@ -29,6 +29,7 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
       enum: ["principle", "student", "teacher"],
+      default: "student",
     },
     totalPaidFees: {
       type: Number,
@@ -38,7 +39,8 @@ const userSchema = mongoose.Schema(
       type: Number,
       default: 0,
     },
-    verified: { type: Boolean },
+    verified: { type: Boolean, default: false },
+    isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

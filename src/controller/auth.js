@@ -27,11 +27,10 @@ export const create = async (req, res) => {
 };
 
 export const signin = async (req, res) => {
-  console.log("====>");
   const { email, password } = req?.body;
   try {
     const user = await models.User.findOne(
-      { email },
+      { email, verified: true, isDeleted: false },
       { totalPaidFees: 0, salary: 0 }
     );
     const matchPass = await bcrypt.compare(password, user?.password);
@@ -50,29 +49,9 @@ export const signin = async (req, res) => {
 };
 
 export const update = async (req, res) => {
-  const { email, userType } = req?.loginUser;
+  const { userType } = req?.loginUser;
   const input = req?.body;
   try {
-    async function userData(data) {
-      const resData = await models.User.findOneAndUpdate(
-        { email: data.email, userType: data.userType },
-        input,
-        {
-          new: true,
-        }
-      );
-      return resData;
-    }
-    async function selfData(data) {
-      const resData = await models.User.findOneAndUpdate(
-        { email: data.email, userType: data.userType },
-        input,
-        {
-          new: true,
-        }
-      );
-      return resData;
-    }
     if (userType === "principle") {
       if (input.email) {
         const resData = await userData(req?.body);
@@ -84,12 +63,22 @@ export const update = async (req, res) => {
     } else if (input.userType === userType) res.send("userType is invalid");
     else if (userType === "teacher") {
       if (input) {
-        const resData = userData();
+        const resData = userData(req?.body);
         res.send({ status: 200, result: resData });
       } else {
-        const resData = selfData();
+        const resData = userData(req?.loginUser);
         res.send({ status: 200, result: resData });
       }
+    }
+    async function userData(data) {
+      const resData = await models.User.findOneAndUpdate(
+        { email: data.email, userType: data.userType },
+        input,
+        {
+          new: true,
+        }
+      );
+      return resData;
     }
   } catch (err) {
     res.send({ status: 400, err: err.message });

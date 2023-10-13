@@ -21,6 +21,7 @@ export const verified = async (req, res) => {
     if (verified === "teacher") req.send("Invalid user");
 
     user.verified = verified;
+    await user.save();
     res.send({ status: 200, result: user });
   } catch (err) {
     res.send({ status: 400, err: err.message });
