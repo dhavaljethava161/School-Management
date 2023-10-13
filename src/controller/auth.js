@@ -33,15 +33,18 @@ export const signin = async (req, res) => {
       { email, verified: true, isDeleted: false },
       { totalPaidFees: 0, salary: 0 }
     );
-    const matchPass = await bcrypt.compare(password, user?.password);
-    if (user.verified === false || !matchPass || !user)
-      res.send("user and password does not matched");
+    if (!user) res.send("user not found");
     else {
-      const token = jwt.sign(
-        { email: user.email, userType: user.userType },
-        config.secret_key
-      );
-      res.send({ status: 200, result: { user, token } });
+      const matchPass = await bcrypt.compare(password, user?.password);
+      if (user.verified === false || !matchPass || !user)
+        res.send("user and password does not matched");
+      else {
+        const token = jwt.sign(
+          { email: user.email, userType: user.userType },
+          config.secret_key
+        );
+        res.send({ status: 200, result: { user, token } });
+      }
     }
   } catch (err) {
     res.send({ status: 400, err: err.message });
@@ -81,6 +84,18 @@ export const update = async (req, res) => {
       return resData;
     }
   } catch (err) {
+    res.send({ status: 400, err: err.message });
+  }
+};
+
+export const Delete = async (req, res) => {
+  try {
+    const _id = req?.loginUser?._id;
+    const user = await models.User.findOne({ _id });
+    user.isDeleted = true;
+    await user.save();
+    res.send({ status: 300, message: `${user.name} is deleted` });
+  } catch (error) {
     res.send({ status: 400, err: err.message });
   }
 };
