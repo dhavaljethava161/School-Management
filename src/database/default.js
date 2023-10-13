@@ -4,7 +4,7 @@ import { config } from "../config";
 export async function admin() {
   try {
     await models.User.updateOne(
-      { email: process.env.PRINCIPLE_MAIL },
+      { email: config.admin_cred.PRINCIPLE_MAIL },
       {
         $set: {
           email: config.admin_cred.PRINCIPLE_MAIL,
