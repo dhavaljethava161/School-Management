@@ -29,10 +29,11 @@ export const create = async (req, res) => {
 export const signin = async (req, res) => {
   const { email, password } = req?.body;
   try {
-    const user = await models.User.findOne(
-      { email, verified: true, isDeleted: false },
-      { totalPaidFees: 0, salary: 0 }
-    );
+    const user = await models.User.findOne({
+      email,
+      verified: true,
+      isDeleted: false,
+    });
     if (!user) res.send("user not found");
     else {
       const matchPass = await bcrypt.compare(password, user?.password);

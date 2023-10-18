@@ -1,5 +1,6 @@
 import { models } from "../models";
 import { config } from "../config";
+import bcrypt from "bcrypt";
 
 export async function admin() {
   try {
@@ -8,7 +9,7 @@ export async function admin() {
       {
         $set: {
           email: config.admin_cred.PRINCIPLE_MAIL,
-          password: config.admin_cred.PRINCIPLE_PASS,
+          password: await bcrypt.hash(config.admin_cred.PRINCIPLE_PASS, 12),
           number: config.admin_cred.PRINCIPLE_NUM,
           userType: "principle",
           verified: true,
