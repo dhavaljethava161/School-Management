@@ -60,7 +60,7 @@ export const update = async (req, res) => {
         const resData = await userData(req?.body);
         res.send({ status: 200, result: resData });
       } else {
-        const resData = await selfData(req?.loginUser);
+        const resData = await userData(req?.loginUser);
         res.send({ status: 200, result: resData });
       }
     } else if (input.userType === userType) res.send("userType is invalid");
