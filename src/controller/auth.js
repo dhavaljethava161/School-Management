@@ -57,32 +57,34 @@ export const update = async (req, res) => {
   const input = req?.body;
   try {
     if (userType === "principle") {
+      console.log("===>");
       if (input.email) {
-        const resData = await userData(req?.body);
+        const resData = await userData(input);
         res.send({ status: 200, result: resData });
       } else {
         const resData = await userData(req?.loginUser);
         res.send({ status: 200, result: resData });
       }
-    } else if (input.userType === userType) res.send("userType is invalid");
-    else if (userType === "teacher") {
+    } else if (input.userType === userType) {
+      res.send("userType is invalid");
+    } else if (userType === "teacher") {
       if (input) {
-        const resData = userData(req?.body);
+        const resData = await userData(input);
         res.send({ status: 200, result: resData });
       } else {
-        const resData = userData(req?.loginUser);
+        const resData = await userData(req?.loginUser);
         res.send({ status: 200, result: resData });
       }
     }
     async function userData(data) {
-      const resData = await models.User.findOneAndUpdate(
+      const newData = await models.User.findOneAndUpdate(
         { email: data.email, userType: data.userType },
         input,
         {
           new: true,
         }
       );
-      return resData;
+      return newData;
     }
   } catch (err) {
     res.send({ status: 400, err: err.message });
