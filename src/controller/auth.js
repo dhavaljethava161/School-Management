@@ -12,7 +12,6 @@ export const create = async (req, res) => {
     else if (user) res.send("user is already exists");
     else {
       await models.User.create(req?.body);
-
       await models.User.findOne({ email }, { totalPaidFees: 0, salary: 0 })
         .then((resData) => {
           res.send({ status: 200, result: resData });
@@ -61,19 +60,13 @@ export const update = async (req, res) => {
     if (input.userType === userType) res.send("userType is invalid");
 
     if (userType === "principle") {
-
       if (input.email) await userData(input);
-
       else await userData(req?.loginUser);
-
     } else if (userType === "teacher") {
-
       if (input) await userData(input);
-
       else await userData(req?.loginUser);
-
     } else if (userType === "student") await userData(req?.loginUser);
-    
+
     async function userData(data) {
       const user = await models.User.findOneAndUpdate(
         { email: data.email, userType: data.userType },
@@ -104,3 +97,36 @@ export const Delete = async (req, res) => {
     res.send({ status: 400, err: err.message });
   }
 };
+
+/* aggregation :
+
+db.fees.aggregate([
+    {
+        // $group: { _id: "$student", data: { $push: "$$ROOT" }, }
+        $group: { _id: "$student", total: { $sum: "$amount" }, }
+    },
+    {
+        $lookup: {
+            from: "users",
+            localField: "_id",
+            foreignField: "_id",
+            as: "_id",
+        }
+    },
+    {
+        $project: {
+            // name: "$_id.name",
+            name: { $first: "$_id.name" },
+            total: 1,
+            _id: 0
+        }
+    }
+
+
+
+
+])
+    .match({})
+    .project({})
+    .sort({ _id: -1 })
+    .limit(100)*/

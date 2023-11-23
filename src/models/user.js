@@ -12,9 +12,9 @@ const userSchema = mongoose.Schema(
     name: String,
     email: { type: String, validate: [emailValid, "email is not valid "] },
     password: { type: String, validate: [passValid, "password is not valid"] },
-    number: Number,
+    number: String,
     dob: Date,
-    age: Number,
+    age: { type: Number, min: 0 },
     gender: {
       type: String,
       enum: ["male", "female"],
@@ -46,9 +46,13 @@ const userSchema = mongoose.Schema(
 );
 
 userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) next();
-  this.password = await bcrypt.hash(this.password, 12);
-  next();
+  try {
+    if (!this.isModified("password")) next();
+    this.password = await bcrypt.hash(this.password, 12);
+    next();
+  } catch (error) {
+    return next(error);
+  }
 });
 
 export default mongoose.model("User", userSchema);
