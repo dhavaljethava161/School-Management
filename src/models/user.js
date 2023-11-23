@@ -15,10 +15,7 @@ const userSchema = mongoose.Schema(
     number: String,
     dob: Date,
     age: { type: Number, min: 0 },
-    gender: {
-      type: String,
-      enum: ["male", "female"],
-    },
+    gender: { type: String, enum: ["male", "female"] },
     address: {
       address: String,
       area: String,
@@ -31,14 +28,8 @@ const userSchema = mongoose.Schema(
       enum: ["principle", "student", "teacher"],
       default: "student",
     },
-    totalPaidFees: {
-      type: Number,
-      default: 0,
-    },
-    salary: {
-      type: Number,
-      default: 0,
-    },
+    totalPaidFees: { type: Number, default: 0 },
+    salary: { type: Number, default: 0 },
     verified: { type: Boolean, default: false },
     isDeleted: { type: Boolean, default: false },
   },
