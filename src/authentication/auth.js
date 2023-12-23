@@ -5,10 +5,8 @@ import { config } from "../config";
 export const checkAuth = async (req, res, next) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
-    console.log("token===>", token);
 
     const data = jwt.verify(token, config.secret_key);
-    console.log("data===>", data);
     if (!data) res.send("Please signIn first");
 
     const userData = await models.User.findOne({ email: data.email });

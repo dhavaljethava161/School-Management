@@ -3,6 +3,7 @@ import "dotenv/config";
 import { routes } from "./router";
 import { dbConnection } from "./database";
 import { config } from "./config";
+import { models } from "./models";
 
 const app = express();
 const port = config.port || 1000;
@@ -17,3 +18,6 @@ app.listen(port, () => {
   dbConnection();
   console.log(`your server is running at http://localhost:${port}`);
 });
+
+
+console.log("models===>", models)
